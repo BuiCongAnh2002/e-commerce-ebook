@@ -5,11 +5,13 @@ const User = require("../models/User");
 const generateToekn = require("../tokenGenerate");
 const protect = require("../middleware/Auth");
 
+//login
 userRoute.post(
     "/login",
     AsyncHandler(async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+        
         if (user && (await user.matchPassword(password))) {
             res.json({
                 _id: user.id,
@@ -32,6 +34,7 @@ userRoute.post(
     AsyncHandler(async (req, res) => {
         const { name, email, password } = req.body;
         const existUser = await User.findOne({ email });
+
         if (existUser) {
             res.status(400);
             throw new Error("User Already exist");
@@ -64,6 +67,7 @@ userRoute.get(
     protect,
     AsyncHandler(async (req, res) => {
         const user = await User.findById(req.user._id);
+
         if (user) {
             res.json({
                 _id: user._id,
@@ -85,6 +89,7 @@ userRoute.put(
     protect,
     AsyncHandler(async (req, res) => {
         const user = await User.findById(req.user._id);
+        
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
